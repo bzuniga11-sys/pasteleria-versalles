@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pastelería Versalles — Arquitectura y Diccionario de Datos</title>
+    <meta property="og:title" content="Pastelería Versalles — Documentación del Sistema">
+    <meta property="og:description" content="Diagrama Entidad-Relación, Diccionario de Datos y Matriz de Referencias Cruzadas.">
+    <meta property="og:image" content="https://bzuniga11-sys.github.io/pasteleria-versalles/logo.jpg">
+    <meta property="og:url" content="https://bzuniga11-sys.github.io/pasteleria-versalles/documentacion.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink-pastel: #FFE4E1;
+            --pink-light: #FFB6C1;
+            --pink-mexican: #E4007C;
+            --pink-dark: #C2185B;
+            --bg-color: #FFF5F8;
+            --text-main: #5D4037;
+            --text-light: #8D6E63;
+            --white: #FFFFFF;
+            --shadow: 0 6px 18px rgba(228, 0, 124, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.55;
+            padding: 25px 15px;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--white);
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border-top: 6px solid var(--pink-mexican);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        header h1 {
+            font-family: 'Pacifico', Georgia, cursive;
+            color: var(--pink-mexican);
+            font-size: 2.2rem;
+            font-weight: normal;
+        }
+
+        header p {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .actions-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background-color: var(--pink-mexican);
+            color: var(--white);
+            border: none;
+            padding: 11px 20px;
+            border-radius: 25px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(228, 0, 124, 0.22);
+        }
+
+        .btn-action.secondary {
+            background-color: var(--white);
+            color: var(--pink-mexican);
+            border: 2px solid var(--pink-mexican);
+            box-shadow: none;
+        }
+
+        .btn-action:hover {
+            background-color: var(--pink-dark);
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+
+        .section-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 182, 193, 0.45);
+        }
+
+        h2 {
+            color: var(--pink-mexican);
+            font-size: 1.45rem;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed var(--pink-pastel);
+        }
+
+        h3 {
+            color: var(--pink-dark);
+            font-size: 1.1rem;
+            margin: 22px 0 10px 0;
+            background: var(--pink-pastel);
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 10px;
+        }
+
+        .diagram-box {
+            background: #FFFDFD;
+            border: 1px solid var(--pink-pastel);
+            border-radius: 12px;
+            padding: 15px;
+            overflow-x: auto;
+            text-align: center;
+        }
+
+        .diagram-box svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--pink-pastel);
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--pink-mexican);
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) {
+            background-color: #FFF9FA;
+        }
+
+        code {
+            background: var(--pink-pastel);
+            color: var(--pink-dark);
+            padding: 2px 6px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .badge-pk { background: #FCE4EC; color: #C2185B; border: 1px solid #F48FB1; }
+        .badge-fk { background: #E3F2FD; color: #1565C0; border: 1px solid #90CAF9; }
+        .badge-req { background: #E8F5E9; color: #2E7D32; }
+        .badge-opt { background: #F5F5F5; color: #616161; }
+
+        .crud-c { color: #2E7D32; font-weight: 700; }
+        .crud-r { color: #1565C0; font-weight: 700; }
+        .crud-u { color: #EF6C00; font-weight: 700; }
+        .crud-d { color: #C62828; font-weight: 700; }
+
+        .legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+            font-size: 0.86rem;
+            background: var(--bg-color);
+            padding: 10px 14px;
+            border-radius: 10px;
+        }
+
+        @media print {
+            @page {
+                size: letter portrait;
+                margin: 1.2cm;
+            }
+            body {
+                background: #FFFFFF !important;
+                padding: 0 !important;
+                font-size: 10pt;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .actions-group {
+                display: none !important;
+            }
+            header {
+                box-shadow: none;
+                border: 1px solid #FFB6C1;
+                border-top: 5px solid #E4007C;
+                padding: 15px 20px;
+                margin-bottom: 15px;
+            }
+            .section-card {
+                box-shadow: none;
+                border: 1px solid #F8BBD0;
+                padding: 18px;
+                margin-bottom: 18px;
+                break-inside: auto;
+            }
+            h2, h3 {
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+            tr, .diagram-box {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            table {
+                font-size: 8.5pt;
+            }
+            th, td {
+                padding: 6px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1>Pastelería Versalles</h1>
+            <p>Arquitectura de Base de Datos — Diagrama Entidad-Relación, Diccionario y Referencias Cruzadas</p>
+        </div>
+        <div class="actions-group">
+            <button class="btn-action" onclick="window.print()">Guardar como PDF / Imprimir</button>
+            <button class="btn-action secondary" onclick="descargarHTML()">Descargar Archivo HTML</button>
+        </div>
+    </header>
+
+    <!-- 1. DIAGRAMA ENTIDAD-RELACIÓN -->
+    <section class="section-card">
+        <h2>1. Diagrama Entidad-Relación (E-R)</h2>
+        <p style="margin-bottom: 14px; color: var(--text-light); font-size: 0.93rem;">
+            Estructura lógica de las entidades almacenadas en la base de datos en la nube, mostrando Claves Primarias (<strong>CP</strong>), Claves Foráneas (<strong>CF</strong>) y cardinalidad de relaciones.
+        </p>
+        <div class="diagram-box">
+            <svg viewBox="0 0 1060 640" xmlns="http://www.w3.org/2000/svg" font-family="Quicksand, Segoe UI, Arial, sans-serif">
+                <defs>
+                    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="110%">
+                        <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#E4007C" flood-opacity="0.12"/>
+                    </filter>
+                </defs>
+
+                <!-- LÍNEAS DE RELACIÓN Y CARDINALIDAD -->
+                <path d="M 270 115 L 365 115" stroke="#E4007C" stroke-width="2.2" fill="none"/>
+                <text x="280" y="106" font-size="12" font-weight="bold" fill="#C2185B">1</text>
+                <text x="335" y="106" font-size="12" font-weight="bold" fill="#C2185B">0..N</text>
+                <rect x="284" y="121" width="66" height="18" rx="4" fill="#FFE4E1"/>
+                <text x="317" y="134" font-size="11" font-weight="bold" text-anchor="middle" fill="#5D4037">solicita</text>
+
+                <path d="M 145 215 L 145 350 L 725 350" stroke="#E4007C" stroke-width="2.2" fill="none"/>
+                <text x="153" y="232" font-size="12" font-weight="bold" fill="#C2185B">1</text>
+                <text x="692" y="341" font-size="12" font-weight="bold" fill="#C2185B">0..N</text>
+                <rect x="360" y="340" width="110" height="20" rx="4" fill="#FFE4E1"/>
+                <text x="415" y="354" font-size="11" font-weight="bold" text-anchor="middle" fill="#5D4037">realiza pedidos</text>
+
+                <path d="M 655 210 L 725 210" stroke="#E4007C" stroke-width="2.2" fill="none"/>
+                <text x="663" y="201" font-size="12" font-weight="bold" fill="#C2185B">1</text>
+                <text x="695" y="201" font-size="12" font-weight="bold" fill="#C2185B">0..1</text>
+                <rect x="658" y="216" width="64" height="18" rx="4" fill="#FFE4E1"/>
+                <text x="690" y="229" font-size="10.5" font-weight="bold" text-anchor="middle" fill="#5D4037">genera</text>
+
+                <path d="M 145 430 L 145 290 L 365 290" stroke="#8D6E63" stroke-width="2" stroke-dasharray="6,4" fill="none"/>
+                <text x="153" y="422" font-size="12" font-weight="bold" fill="#5D4037">1</text>
+                <text x="335" y="281" font-size="12" font-weight="bold" fill="#5D4037">0..N</text>
+                <rect x="190" y="280" width="120" height="20" rx="4" fill="#F5F5F5"/>
+                <text x="250" y="294" font-size="10.5" font-weight="bold" text-anchor="middle" fill="#5D4037">parametriza tarifas</text>
+
+                <!-- ENTIDAD 1: CLIENTES -->
+                <g filter="url(#cardShadow)">
+                    <rect x="20" y="30" width="250" height="185" rx="10" fill="#FFFFFF" stroke="#E4007C" stroke-width="2"/>
+                    <path d="M 20 40 Q 20 30 30 30 L 260 30 Q 270 30 270 40 L 270 66 L 20 66 Z" fill="#E4007C"/>
+                    <text x="145" y="53" font-size="14" font-weight="bold" text-anchor="middle" fill="#FFFFFF">CLIENTES (clients)</text>
+                    
+                    <text x="32" y="88" font-size="12" fill="#C2185B" font-weight="bold">CP  idDocumento : Texto</text>
+                    <text x="32" y="112" font-size="12" fill="#5D4037">     nombre : Texto</text>
+                    <text x="32" y="136" font-size="12" fill="#5D4037">     telefono : Texto</text>
+                    <text x="32" y="160" font-size="12" fill="#5D4037">     pedidos : Número</text>
+                    <text x="32" y="184" font-size="12" fill="#5D4037">     puntos : Número</text>
+                </g>
+
+                <!-- ENTIDAD 2: CONFIGURACIÓN -->
+                <g filter="url(#cardShadow)">
+                    <rect x="20" y="430" width="275" height="165" rx="10" fill="#FFFFFF" stroke="#8D6E63" stroke-width="2"/>
+                    <path d="M 20 440 Q 20 430 30 430 L 285 430 Q 295 430 295 440 L 295 466 L 20 466 Z" fill="#5D4037"/>
+                    <text x="157" y="453" font-size="13.5" font-weight="bold" text-anchor="middle" fill="#FFFFFF">CONFIGURACIÓN (settings)</text>
+                    
+                    <text x="32" y="488" font-size="12" fill="#C2185B" font-weight="bold">CP  idDocumento : Texto ('general')</text>
+                    <text x="32" y="512" font-size="12" fill="#5D4037">     precioKg : Número ($230)</text>
+                    <text x="32" y="536" font-size="12" fill="#5D4037">     precioMini : Número ($150)</text>
+                    <text x="32" y="560" font-size="12" fill="#5D4037">     cargoRellenoEspecial : Número ($200)</text>
+                </g>
+
+                <!-- ENTIDAD 3: COTIZACIONES -->
+                <g filter="url(#cardShadow)">
+                    <rect x="365" y="20" width="290" height="305" rx="10" fill="#FFFFFF" stroke="#E4007C" stroke-width="2"/>
+                    <path d="M 365 30 Q 365 20 375 20 L 645 20 Q 655 20 655 30 L 655 56 L 365 56 Z" fill="#E4007C"/>
+                    <text x="510" y="43" font-size="14" font-weight="bold" text-anchor="middle" fill="#FFFFFF">COTIZACIONES (quotes)</text>
+                    
+                    <text x="377" y="76" font-size="11.5" fill="#C2185B" font-weight="bold">CP  idDocumento : Texto</text>
+                    <text x="377" y="96" font-size="11.5" fill="#2E7D32" font-weight="bold">CU  folio : Texto (COT-XXXX)</text>
+                    <text x="377" y="116" font-size="11.5" fill="#1565C0" font-weight="bold">CF  cliente / telefono : Texto</text>
+                    <text x="377" y="136" font-size="11.5" fill="#5D4037">     empleado : Texto</text>
+                    <text x="377" y="156" font-size="11.5" fill="#5D4037">     fecha / hora : Texto</text>
+                    <text x="377" y="176" font-size="11.5" fill="#5D4037">     tipoEntrega / direccion : Texto</text>
+                    <text x="377" y="196" font-size="11.5" fill="#5D4037">     metodoPago : Texto</text>
+                    <text x="377" y="216" font-size="11.5" fill="#5D4037">     tipoPastel / personas / pisos</text>
+                    <text x="377" y="236" font-size="11.5" fill="#5D4037">     saborPan / rellenos / deco</text>
+                    <text x="377" y="256" font-size="11.5" fill="#5D4037">     precioBase / cargosExtras : Número</text>
+                    <text x="377" y="276" font-size="11.5" fill="#5D4037">     total / anticipo / saldo : Número</text>
+                    <text x="377" y="296" font-size="11.5" fill="#5D4037">     estado : Texto (Borrador/Convertida)</text>
+                    <text x="377" y="314" font-size="11.5" fill="#5D4037">     fechaCreacion : Texto ISO</text>
+                </g>
+
+                <!-- ENTIDAD 4: PEDIDOS -->
+                <g filter="url(#cardShadow)">
+                    <rect x="725" y="70" width="315" height="335" rx="10" fill="#FFFFFF" stroke="#E4007C" stroke-width="2"/>
+                    <path d="M 725 80 Q 725 70 735 70 L 1030 70 Q 1040 70 1040 80 L 1040 106 L 725 106 Z" fill="#C2185B"/>
+                    <text x="882" y="93" font-size="14" font-weight="bold" text-anchor="middle" fill="#FFFFFF">PEDIDOS (orders)</text>
+                    
+                    <text x="737" y="128" font-size="11.5" fill="#C2185B" font-weight="bold">CP  idDocumento : Texto</text>
+                    <text x="737" y="150" font-size="11.5" fill="#2E7D32" font-weight="bold">CU  folio : Texto (PED-XXXX)</text>
+                    <text x="737" y="172" font-size="11.5" fill="#1565C0" font-weight="bold">CF  folioCotizacion : Texto</text>
+                    <text x="737" y="194" font-size="11.5" fill="#1565C0" font-weight="bold">CF  cliente / telefono : Texto</text>
+                    <text x="737" y="216" font-size="11.5" fill="#5D4037">     fecha / hora : Texto</text>
+                    <text x="737" y="238" font-size="11.5" fill="#5D4037">     detalles : Texto</text>
+                    <text x="737" y="260" font-size="11.5" fill="#5D4037">     total : Número</text>
+                    <text x="737" y="282" font-size="11.5" fill="#5D4037">     pagado : Número</text>
+                    <text x="737" y="304" font-size="11.5" fill="#5D4037">     metodoPago : Texto</text>
+                    <text x="737" y="326" font-size="11.5" fill="#5D4037">     tipoEntrega / direccion : Texto</text>
+                    <text x="737" y="348" font-size="11.5" fill="#5D4037">     estado : Texto (Pendiente..Entregado)</text>
+                    <text x="737" y="370" font-size="11.5" fill="#5D4037">     fechaCreacion : Texto ISO</text>
+                </g>
+
+                <!-- LEYENDA DEL DIAGRAMA -->
+                <rect x="365" y="445" width="675" height="150" rx="10" fill="#FFF5F8" stroke="#FFB6C1" stroke-width="1.5"/>
+                <text x="385" y="472" font-size="13" font-weight="bold" fill="#E4007C">Simbología del Modelo Entidad-Relación:</text>
+                <text x="385" y="498" font-size="12" fill="#C2185B" font-weight="bold">CP (Clave Primaria):</text>
+                <text x="515" y="498" font-size="12" fill="#5D4037">Identificador único del documento en la base de datos.</text>
+                
+                <text x="385" y="522" font-size="12" fill="#2E7D32" font-weight="bold">CU (Clave Única):</text>
+                <text x="515" y="522" font-size="12" fill="#5D4037">Folio comercial irrepetible visible para el usuario (COT-XXXX / PED-XXXX).</text>
+                
+                <text x="385" y="546" font-size="12" fill="#1565C0" font-weight="bold">CF (Clave Foránea):</text>
+                <text x="515" y="546" font-size="12" fill="#5D4037">Atributo que enlaza lógicamente un registro con su entidad de origen.</text>
+                
+                <text x="385" y="570" font-size="12" fill="#5D4037" font-weight="bold">Cardinalidad:</text>
+                <text x="515" y="570" font-size="12" fill="#5D4037">1 a 0..N (Uno a muchos) | 1 a 0..1 (Una cotización genera máximo un pedido).</text>
+            </svg>
+        </div>
+    </section>
+
+    <!-- 2. DICCIONARIO DE DATOS -->
+    <section class="section-card">
+        <h2>2. Diccionario de Datos</h2>
+        <p style="margin-bottom: 10px; color: var(--text-light); font-size: 0.93rem;">
+            Definición detallada de todas las entidades y atributos almacenados en la base de datos de <strong>Pastelería Versalles</strong> (entre paréntesis se muestra el nombre interno de cada campo).
+        </p>
+
+        <!-- Entidad CLIENTES -->
+        <h3>Entidad: Clientes (Colección: <code>clients</code>)</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Atributo (Clave interna)</th>
+                        <th>Tipo de Dato</th>
+                        <th>Llave / Restricción</th>
+                        <th>Ejemplo</th>
+                        <th>Descripción Funcional</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Identificador (<code>docId</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-pk">CP</span> Automático</td>
+                        <td><code>7xK9mP2qL1vR</code></td>
+                        <td>Clave primaria única generada automáticamente por el gestor de base de datos.</td>
+                    </tr>
+                    <tr>
+                        <td>Nombre (<code>name</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>Ana Pérez</code></td>
+                        <td>Nombre completo del cliente; utilizado como índice de búsqueda en el autocompletado.</td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono (<code>phone</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-opt">Opcional</span></td>
+                        <td><code>4191234567</code></td>
+                        <td>Número telefónico de contacto (10 dígitos) empleado para enviar comprobantes por WhatsApp.</td>
+                    </tr>
+                    <tr>
+                        <td>Pedidos realizados (<code>orders</code>)</td>
+                        <td>Número entero</td>
+                        <td><span class="badge badge-req">Obligatorio</span> (Inicio: 0)</td>
+                        <td><code>3</code></td>
+                        <td>Contador acumulado de pedidos que han alcanzado el estado <em>Entregado</em>.</td>
+                    </tr>
+                    <tr>
+                        <td>Puntos acumulados (<code>points</code>)</td>
+                        <td>Número entero</td>
+                        <td><span class="badge badge-req">Obligatorio</span> (Inicio: 0)</td>
+                        <td><code>14</code></td>
+                        <td>Puntos de lealtad acumulados (1 punto por cada $100 MXN en pedidos entregados).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Entidad COTIZACIONES -->
+        <h3>Entidad: Cotizaciones (Colección: <code>quotes</code>)</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Atributo (Clave interna)</th>
+                        <th>Tipo de Dato</th>
+                        <th>Llave / Restricción</th>
+                        <th>Ejemplo</th>
+                        <th>Descripción Funcional</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Identificador (<code>docId</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-pk">CP</span> Automático</td>
+                        <td><code>aB3dE5fG7hJ9</code></td>
+                        <td>Clave primaria única del registro de cotización.</td>
+                    </tr>
+                    <tr>
+                        <td>Folio (<code>folio</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Clave Única</span></td>
+                        <td><code>COT-4821</code></td>
+                        <td>Código visible compuesto por el prefijo <code>COT-</code> y 4 dígitos aleatorios.</td>
+                    </tr>
+                    <tr>
+                        <td>Vendedor (<code>employee</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>Carlos Ruiz</code></td>
+                        <td>Nombre del empleado o vendedor que elaboró la cotización.</td>
+                    </tr>
+                    <tr>
+                        <td>Cliente (<code>client</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-fk">CF Lógica</span></td>
+                        <td><code>Ana Pérez</code></td>
+                        <td>Nombre del cliente vinculado a la entidad <strong>Clientes</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono (<code>phone</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-fk">CF Lógica</span></td>
+                        <td><code>4191234567</code></td>
+                        <td>Teléfono del cliente para envío directo de la cotización por WhatsApp.</td>
+                    </tr>
+                    <tr>
+                        <td>Fecha de entrega (<code>date</code>)</td>
+                        <td>Texto (Fecha)</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>2026-11-20</code></td>
+                        <td>Fecha solicitada para la entrega del pastel (formato AAAA-MM-DD).</td>
+                    </tr>
+                    <tr>
+                        <td>Hora de entrega (<code>time</code>)</td>
+                        <td>Texto (Hora)</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>16:30</code></td>
+                        <td>Hora acordada para la entrega (formato HH:MM).</td>
+                    </tr>
+                    <tr>
+                        <td>Tipo de entrega (<code>deliveryType</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Lista cerrada</span></td>
+                        <td><code>A domicilio</code></td>
+                        <td>Modalidad elegida: <code>Recoger en pastelería</code> o <code>A domicilio</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Dirección (<code>deliveryAddress</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-opt">Condicional</span></td>
+                        <td><code>Calle Hidalgo #45, Centro</code></td>
+                        <td>Domicilio completo; obligatorio únicamente si la entrega es <em>A domicilio</em>.</td>
+                    </tr>
+                    <tr>
+                        <td>Zona de envío (<code>deliveryZoneText</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-opt">Opcional</span></td>
+                        <td><code>Centro San José Iturbide...</code></td>
+                        <td>Descripción textual de la tarifa de envío seleccionada.</td>
+                    </tr>
+                    <tr>
+                        <td>Método de pago (<code>paymentMethod</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Lista cerrada</span></td>
+                        <td><code>Transferencia</code></td>
+                        <td>Forma de pago: <code>Efectivo</code>, <code>Tarjeta</code> o <code>Transferencia</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Tipo de pastel (<code>type</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>Pastel 2 Pisos</code></td>
+                        <td>Clasificación: <code>Estándar</code>, <code>Mini</code> o <code>Pastel N Pisos</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Personas (<code>people</code>)</td>
+                        <td>Número entero</td>
+                        <td><span class="badge badge-req">Mínimo: 1</span></td>
+                        <td><code>60</code></td>
+                        <td>Capacidad de porciones o personas del pastel.</td>
+                    </tr>
+                    <tr>
+                        <td>Kilogramos (<code>kg</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Calculado</span></td>
+                        <td><code>6.0 kg</code></td>
+                        <td>Equivalencia en peso (10 personas = 1 kg) o etiqueta <code>Mini</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Número de pisos (<code>tiers</code>)</td>
+                        <td>Número entero</td>
+                        <td><span class="badge badge-req">Rango: 1 a 5</span></td>
+                        <td><code>2</code></td>
+                        <td>Cantidad de niveles o pisos estructurales del pastel.</td>
+                    </tr>
+                    <tr>
+                        <td>Sabor de pan (<code>bread</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Lista cerrada</span></td>
+                        <td><code>Vainilla</code></td>
+                        <td>Sabor del bizcocho: <code>Vainilla</code> o <code>Chocolate</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Decoración (<code>deco</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Lista cerrada</span></td>
+                        <td><code>floral</code></td>
+                        <td>Estilo decorativo: <code>basica</code>, <code>infantil</code>, <code>floral</code> o <code>eventos</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Impresión (<code>impresion</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>Oblea Comestible (+$90 MXN)</code></td>
+                        <td>Tipo de impresión gráfica incluida o adicional.</td>
+                    </tr>
+                    <tr>
+                        <td>Rellenos (<code>fillings</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>Fresa, Nutella</code></td>
+                        <td>Rellenos incluidos y especiales seleccionados, separados por coma.</td>
+                    </tr>
+                    <tr>
+                        <td>Notas (<code>notes</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-opt">Opcional</span></td>
+                        <td><code>Feliz Cumpleaños Ana</code></td>
+                        <td>Texto de dedicatoria o indicaciones especiales de diseño.</td>
+                    </tr>
+                    <tr>
+                        <td>Precio base (<code>basePrice</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>1380</code></td>
+                        <td>Subtotal base calculado por peso, tamaño mini o tarifa fija por pisos.</td>
+                    </tr>
+                    <tr>
+                        <td>Costo rellenos (<code>fillingCost</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>200</code></td>
+                        <td>Cargo fijo adicional ($200) si incluye al menos un relleno especial.</td>
+                    </tr>
+                    <tr>
+                        <td>Costo decoración (<code>decoCost</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>400</code></td>
+                        <td>Sobrecosto por decoración floral ($200 por cada bloque de 50 personas).</td>
+                    </tr>
+                    <tr>
+                        <td>Costo oblea (<code>obleaCost</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>90</code></td>
+                        <td>Costo adicional por oblea comestible ($0 o $90).</td>
+                    </tr>
+                    <tr>
+                        <td>Costo envío (<code>deliveryCost</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>150</code></td>
+                        <td>Costo de envío a domicilio según zona ($0, $150 o $200).</td>
+                    </tr>
+                    <tr>
+                        <td>Total (<code>total</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>2220</code></td>
+                        <td>Suma total de precio base, rellenos, decoración, oblea y envío.</td>
+                    </tr>
+                    <tr>
+                        <td>Anticipo (<code>advance</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>1000</code></td>
+                        <td>Monto de anticipo registrado al momento de cotizar.</td>
+                    </tr>
+                    <tr>
+                        <td>Saldo pendiente (<code>balance</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>1220</code></td>
+                        <td>Saldo restante calculado como el total menos el anticipo.</td>
+                    </tr>
+                    <tr>
+                        <td>Estado (<code>status</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Lista cerrada</span></td>
+                        <td><code>Borrador</code></td>
+                        <td>Estado de la cotización: <code>Borrador</code> o <code>Convertida</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Fecha de creación (<code>created</code>)</td>
+                        <td>Texto (Fecha/Hora)</td>
+                        <td><span class="badge badge-req">Automático</span></td>
+                        <td><code>2026-11-13T16:40:00.000Z</code></td>
+                        <td>Marca de tiempo exacta de registro utilizada para ordenar cronológicamente.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Entidad PEDIDOS -->
+        <h3>Entidad: Pedidos Oficiales (Colección: <code>orders</code>)</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Atributo (Clave interna)</th>
+                        <th>Tipo de Dato</th>
+                        <th>Llave / Restricción</th>
+                        <th>Ejemplo</th>
+                        <th>Descripción Funcional</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Identificador (<code>docId</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-pk">CP</span> Automático</td>
+                        <td><code>mN8bV7cX6zL5</code></td>
+                        <td>Clave primaria única del pedido en la base de datos.</td>
+                    </tr>
+                    <tr>
+                        <td>Folio de pedido (<code>folio</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Clave Única</span></td>
+                        <td><code>PED-9104</code></td>
+                        <td>Folio operativo del pedido (prefijo <code>PED-</code> + 4 dígitos).</td>
+                    </tr>
+                    <tr>
+                        <td>Folio cotización (<code>quoteFolio</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-fk">CF</span></td>
+                        <td><code>COT-4821</code></td>
+                        <td>Folio de la cotización de origen en la entidad <strong>Cotizaciones</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td>Cliente (<code>client</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-fk">CF Lógica</span></td>
+                        <td><code>Ana Pérez</code></td>
+                        <td>Nombre del cliente titular del pedido.</td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono (<code>phone</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-fk">CF Lógica</span></td>
+                        <td><code>4191234567</code></td>
+                        <td>Teléfono de contacto del cliente.</td>
+                    </tr>
+                    <tr>
+                        <td>Fecha de entrega (<code>date</code>)</td>
+                        <td>Texto (Fecha)</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>2026-11-20</code></td>
+                        <td>Fecha comprometida de entrega del pedido.</td>
+                    </tr>
+                    <tr>
+                        <td>Hora de entrega (<code>time</code>)</td>
+                        <td>Texto (Hora)</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>16:30</code></td>
+                        <td>Hora comprometida de entrega del pedido.</td>
+                    </tr>
+                    <tr>
+                        <td>Detalles (<code>details</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>Pastel 2 Pisos (60 pers...). Pan: Vainilla...</code></td>
+                        <td>Descripción consolidada con tamaño, pan, relleno, decoración y notas.</td>
+                    </tr>
+                    <tr>
+                        <td>Total (<code>total</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>2220</code></td>
+                        <td>Importe total de la venta.</td>
+                    </tr>
+                    <tr>
+                        <td>Monto pagado (<code>paid</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>1500</code></td>
+                        <td>Suma del anticipo inicial más los abonos posteriores registrados.</td>
+                    </tr>
+                    <tr>
+                        <td>Método de pago (<code>paymentMethod</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Lista cerrada</span></td>
+                        <td><code>Transferencia</code></td>
+                        <td>Método de pago registrado al confirmar la cotización.</td>
+                    </tr>
+                    <tr>
+                        <td>Tipo de entrega (<code>deliveryType</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Obligatorio</span></td>
+                        <td><code>A domicilio</code></td>
+                        <td>Modalidad de entrega heredada de la cotización.</td>
+                    </tr>
+                    <tr>
+                        <td>Dirección (<code>deliveryAddress</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-opt">Opcional</span></td>
+                        <td><code>Calle Hidalgo #45, Centro</code></td>
+                        <td>Dirección de entrega si aplica envío a domicilio.</td>
+                    </tr>
+                    <tr>
+                        <td>Estado operativo (<code>status</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-req">Lista cerrada</span></td>
+                        <td><code>Confirmado</code></td>
+                        <td>Flujo de producción: <code>Pendiente</code>, <code>Confirmado</code>, <code>Preparación</code>, <code>Entregado</code> o <code>Cancelado</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Fecha de creación (<code>created</code>)</td>
+                        <td>Texto (Fecha/Hora)</td>
+                        <td><span class="badge badge-req">Automático</span></td>
+                        <td><code>2026-11-13T16:42:10.000Z</code></td>
+                        <td>Marca de tiempo exacta en que la cotización se convirtió en pedido.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Entidad CONFIGURACION -->
+        <h3>Entidad: Configuración Global (Colección: <code>settings</code>)</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Atributo (Clave interna)</th>
+                        <th>Tipo de Dato</th>
+                        <th>Llave / Restricción</th>
+                        <th>Ejemplo</th>
+                        <th>Descripción Funcional</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Identificador (<code>docId</code>)</td>
+                        <td>Texto</td>
+                        <td><span class="badge badge-pk">CP</span> Fijo</td>
+                        <td><code>general</code></td>
+                        <td>Documento único de configuración con identificador fijo <code>general</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Precio por kg (<code>priceKg</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>230</code></td>
+                        <td>Precio base por cada 10 personas (1 kg) en pasteles de 1 piso.</td>
+                    </tr>
+                    <tr>
+                        <td>Precio mini (<code>priceMini</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>150</code></td>
+                        <td>Precio unitario fijo para pasteles mini personalizados.</td>
+                    </tr>
+                    <tr>
+                        <td>Cargo relleno especial (<code>feePremium</code>)</td>
+                        <td>Número decimal</td>
+                        <td><span class="badge badge-req">Moneda MXN</span></td>
+                        <td><code>200</code></td>
+                        <td>Cargo fijo adicional aplicado cuando se eligen rellenos especiales.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 3. TABLA DE REFERENCIAS CRUZADAS -->
+    <section class="section-card">
+        <h2>3. Tabla de Referencias Cruzadas (Matriz de Operaciones por Módulo y Rol)</h2>
+        <p style="margin-bottom: 14px; color: var(--text-light); font-size: 0.93rem;">
+            Relación operativa entre las entidades de la base de datos, las pantallas de la aplicación y los permisos asignados a cada perfil de usuario.
+        </p>
+
+        <div class="legend">
+            <span><strong class="crud-c">C</strong> = Crear / Insertar registros</span>
+            <span><strong class="crud-r">L</strong> = Leer / Consultar en tiempo real</span>
+            <span><strong class="crud-u">A</strong> = Actualizar / Modificar registros</span>
+            <span><strong class="crud-d">E</strong> = Eliminar registros (solo vía Consola de Administración)</span>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Módulo / Pantalla</th>
+                        <th>Rol Permitido</th>
+                        <th>Clientes</th>
+                        <th>Cotizaciones</th>
+                        <th>Pedidos</th>
+                        <th>Configuración</th>
+                        <th>Reglas de Negocio y Disparadores</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Panel Principal (Dashboard)</strong></td>
+                        <td>Administrador</td>
+                        <td>—</td>
+                        <td><span class="crud-r">L</span></td>
+                        <td><span class="crud-r">L</span></td>
+                        <td>—</td>
+                        <td>Calcula ingresos cobrados (pagos de pedidos excluyendo <em>Cancelado</em>), conteo de entregas pendientes y total de cotizaciones.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cotizador</strong></td>
+                        <td>Vendedor</td>
+                        <td><span class="crud-c">C</span> / <span class="crud-r">L</span> / <span class="crud-u">A</span></td>
+                        <td><span class="crud-c">C</span> / <span class="crud-r">L</span> / <span class="crud-u">A</span></td>
+                        <td><span class="crud-c">C</span></td>
+                        <td><span class="crud-r">L</span></td>
+                        <td>Lee tarifas vigentes; crea la cotización; registra o actualiza al cliente; convierte borradores aprobados en pedidos oficiales.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gestión de Pedidos</strong></td>
+                        <td>Administrador y Vendedor</td>
+                        <td><span class="crud-c">C</span> / <span class="crud-u">A</span></td>
+                        <td>—</td>
+                        <td><span class="crud-r">L</span> / <span class="crud-u">A</span></td>
+                        <td>—</td>
+                        <td>Permite registrar abonos y cambiar estado. Al marcar como <em>Entregado</em>, suma +1 pedido y 1 punto por cada $100 MXN al cliente.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Base de Clientes</strong></td>
+                        <td>Administrador y Vendedor</td>
+                        <td><span class="crud-r">L</span></td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>Muestra el directorio sincronizado de clientes frecuentes, historial de entregas y saldo de puntos de lealtad.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Productos</strong></td>
+                        <td>Administrador</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td><span class="crud-r">L</span></td>
+                        <td>Vista informativa del catálogo base estandarizado y las tarifas fijas por número de pisos.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Configuración</strong></td>
+                        <td>Administrador</td>
+                        <td><span class="crud-r">L</span></td>
+                        <td><span class="crud-r">L</span></td>
+                        <td><span class="crud-r">L</span></td>
+                        <td><span class="crud-c">C</span> / <span class="crud-r">L</span> / <span class="crud-u">A</span></td>
+                        <td>Actualiza los precios base en tiempo real y permite descargar un respaldo completo de todas las entidades en formato JSON.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consola de Base de Datos</strong><br><small>(Administración externa)</small></td>
+                        <td>Superadministrador</td>
+                        <td><span class="crud-d">E</span></td>
+                        <td><span class="crud-d">E</span></td>
+                        <td><span class="crud-d">E</span></td>
+                        <td><span class="crud-d">E</span></td>
+                        <td>Único punto autorizado para el borrado físico de registros y gestión de reglas de seguridad de la base de datos.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<script>
+    function descargarHTML() {
+        const contenido = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([contenido], { type: 'text/html;charset=utf-8' });
+        const enlace = document.createElement('a');
+        enlace.href = URL.createObjectURL(blob);
+        enlace.download = 'Documentacion_Pasteleria_Versalles.html';
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+        URL.revokeObjectURL(enlace.href);
+    }
+</script>
+
+</body>
+</html>
